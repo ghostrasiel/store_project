@@ -30,7 +30,7 @@
 Kaggle上只有產品編號,故我們將透過Kaggle提供的分類資訊來爬取相對應的產品,我們主要爬取的網站為:Amazon,Target,cosco
 * 資料爬取流程:
 ![image](https://user-images.githubusercontent.com/58453878/131319704-d49a5931-4f65-4c7b-93f1-5ddc6850ffa4.png)
-1. 爬取Amazon資料時有遇到網站阻擋ip , 故我採取使用多IP的方式在每次爬取資料時隨機變更ip使網站不再阻擋 //詳情程式碼請參考:爬蟲/ETL_amazon_search.py
+1. 爬取Amazon資料時有遇到網站阻擋ip , 故我採取使用多IP的方式在每次爬取資料時隨機變更ip使網站不再阻擋 //詳情程式碼請參考:爬蟲/ETL_amazon_search.py  
 ![image](https://user-images.githubusercontent.com/58453878/131321875-24e1c872-b169-4763-84ac-6f85a9ab7c4c.png)
 2. 透過多線程的方式爬取網站 加速網站速度 //詳情程式碼請參考:爬蟲/target.com_說明.ipynb
 * 資料清洗: //詳情程式碼:./sql_data_add.ipynb
