@@ -1,37 +1,46 @@
 import pymysql
+import datetime
+import sys
 
-conninfo = {'host':'localhost' , 'port':3306,'user':'eric' , 'passwd':'123456',
+conninfo = {'host':'3.113.29.214' , 'port':3306,'user':'eric' , 'passwd':'123456',
 'db':'store_db','charset':'utf8mb4'}
 
-def select_barsket(member_id , text):
+def select_barsket(member_id):
+    today = datetime.datetime.today()
+    st_today = today.strftime('%Y-%m-%d')
+    cash = 0
+    word_list = []
     while True:
         try:
             conn = pymysql.connect(**conninfo)
             cursor = conn.cursor()
-            select_product =f"""select p.name ,b.quantity , round(p.price * b.quantity , 2) as 'Total' 
-            from barsket as b natural join product as p where member_id LIKE "{member_id}" ;  """
+            select_product = f"""select b.member_id , p.name , b.quantity , round(p.price * b.quantity , 2) as 'Total'  , b.date
+                from barsket as b natural join product as p where member_id ="{member_id}" and transaction_id is not null 
+                and date >= (select date_format(date , '%Y-%m-%d') as date FROM store_db.barsket where member_id LIKE "{member_id}" and transaction_id  is not null group by date  order by date desc limit 1) ;  """
 
-            select_Total = f"""select sum(round(p.price * b.quantity , 2)) as 'basket_Total' 
-            from barsket as b natural join product as p where member_id = "{member_id}" ; """
             cursor.execute(select_product)
             barsket_product = cursor.fetchall()
-            cursor.execute(select_Total)
-            barsket_Total = cursor.fetchall()
-            word_list = [f'{b[0]},共{b[1]}樣' for b in barsket_product if b[1] != 0 ]
-            words ='\n'.join(word_list)
+            for b in barsket_product:
+                if b[2] != 0:
+                    word_list.append(f'{b[1]},共{b[2]}樣')
+                    cash += b[3]
+                    user_id = b[0]
+                    date = b[4]
+            words = '\n'.join(word_list)
             break
         except:
-            print('連線異樣')
-    cursor.close()
-    conn.close()
+            print('異常')
+            print(sys.exc_info()[0])
+            print(sys.exc_info()[1])
+        finally:
+            cursor.close()
+            conn.close()
 
-    if barsket_Total[0][0] != None:
-        if text == '查詢購物車':
-            return f'你目前購物車有:\n{words}\n目前總計: ${barsket_Total[0][0]}'
-        else :
-            return f'目前你的購物金額為: ${barsket_Total[0][0]}'
+    if len(barsket_product) != 0:
+        total = int(round(cash * 30, 0))
+        return f'上次購買時間:\n{date}\n此次購買商品為:\n{words}\n總計消費金額: NT${total}'
     else:
-        return '你目前購物車內無任何商品,請拍攝Qrcode加入商品' 
+        return '目前並無任何消費紀錄'
 
 
 def edit_barsket(member_id , product_id):
@@ -81,20 +90,19 @@ def edit_barsket(member_id , product_id):
     conn.close()
     return text
 
-def add_member(member_id , name):
+def add_member(html , member_id ):
     while True:
-        conn = pymysql.connect(**conninfo)
-        cursor = conn.cursor()
-        break
+        try:
+            conn = pymysql.connect(**conninfo)
+            cursor = conn.cursor()
+            break
+        except:
+            print('連線異樣')
     select = f'''select member_id from member_db where member_id = '{member_id}' ;'''
     cursor.execute(select)
     ms = cursor.fetchall()
     if len(ms) == 0 :
-        add =f'''insert into member_db(member_id) 
-        values('{member_id}');'''
-        cursor.execute(add)
-        conn.commit() #完成交易
-        text = f'Hi {name},歡迎你加入'
+        text = f'{html}?user={member_id}'
     else:
         text = '你已經加入成功'
     
@@ -128,6 +136,63 @@ def updata_tag(member_id , mesage) :
     conn.close()
     return text
 
+def select_recommend(member_id) :
+    while True:
+        conn = pymysql.connect(**conninfo)
+        cursor = conn.cursor()
+        break
+    try:
+        select = f'''select member_id from select_recommend where member_id = '{member_id}' ;'''
+        cursor.execute(select)
+        text = cursor.fetchall()
+    except:
+        print('異常')
+        print(sys.exc_info()[0])
+        print(sys.exc_info()[1])
+    finally:
+        cursor.close()
+        conn.close()
+    if len(text) != 0:
+        return text
+    else:
+        return None
+
+def add_select_recommend(member_id) :
+    while True:
+        conn = pymysql.connect(**conninfo)
+        cursor = conn.cursor()
+        break
+    try:
+        add_recommend = f'''insert into select_recommend(member_id) values('{member_id}') ;'''
+        cursor.execute(add_recommend)
+        conn.commit()
+        print('ok')
+    except:
+        print('異常')
+        print(sys.exc_info()[0])
+        print(sys.exc_info()[1])
+    finally:
+        cursor.close()
+        conn.close()
+
+def del_select_recommend(member_id) :
+    while True:
+        conn = pymysql.connect(**conninfo)
+        cursor = conn.cursor()
+        break
+    try:
+        del_recommend = f'''delete from select_recommend where member_id = '{member_id}' ;'''
+        cursor.execute(del_recommend)
+        conn.commit()
+        print('ok')
+    except:
+        print('異常')
+        print(sys.exc_info()[0])
+        print(sys.exc_info()[1])
+    finally:
+        cursor.close()
+        conn.close()
+
 
     
 
@@ -153,3 +218,13 @@ def updata_tag(member_id , mesage) :
 
 # if (mesage == '移除購物車') or (mesage == "加入商品" ):
 #     print(updata_tag(member_id , mesage))
+
+if __name__ == '__main__':
+    # today = datetime.datetime.today()
+    # print(today.strftime('%Y-%m-%d'))
+    add_select_recommend('U6ff9124eb8c4224f8fc607bd5e87ea29')
+    print(select_recommend('U6ff9124eb8c4224f8fc607bd5e87ea29'))
+    del_select_recommend('U6ff9124eb8c4224f8fc607bd5e87ea29')
+    print(select_recommend('U6ff9124eb8c4224f8fc607bd5e87ea29'))
+
+    # print(add_member('1234.com/' ,  member_id='U7216736aff9e39ca18b1534e6efe97bc'))
