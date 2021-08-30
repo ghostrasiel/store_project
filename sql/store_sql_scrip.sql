@@ -14,7 +14,8 @@ star_comments float) ;
 
 #會員DB
 create table if not exists member_db
-(member_id varchar(45) not null Primary key, 
+(id INT not null AUTO_INCREMENT unique ,
+member_id varchar(45) not null Primary key, 
 name varchar(45) not null ,
 age int,
 marital_status varchar(45),
@@ -24,7 +25,9 @@ customer_picture varchar(45),
 homeowner varchar(45) ,
 household_size varchar(45),
 kid_category varchar(45) , 
-household varchar(45)) ;
+household varchar(45) ,
+picture_array BLOB , 
+picture_path text ) ;
 
 #購物籃db
 create table if not exists barsket
@@ -41,6 +44,13 @@ create table if not exists transaction
 (transaction_id varchar(45) not null , 
 date datetime not null DEFAULT CURRENT_TIMESTAMP , 
 sales_value float not null);
+
+#logs 紀錄錯誤訊息
+create table if not exists system_logs
+(id INT not null AUTO_INCREMENT unique , 
+tag varchar(45) not null , 
+date datetime , 
+log text);
 
 #測試
 -- insert 	into product(product_id , name , price ,  commodity) values(111111 , 'apple' , 4.99 , 'food') ;
