@@ -28,10 +28,11 @@
 (更好的方式應該採用Redis 可以讓整體速度更快 這也是未來該更改的部份)
 5. 撰寫API供他人快速導入 //程式碼詳情可參考(linebot/Flask/model/select.py)
 ### 資料產品爬蟲及資料清洗
-Kaggle上只有產品編號,故我們將透過Kaggle提供的分類資訊來爬取相對應的產品,我們主要爬取的網站為:Amazon,Target,cosco
+Kaggle上只有產品編號,故我們將透過Kaggle提供的分類資訊來爬取相對應的產品,我們主要爬取的網站為:Amazon,Target,costco
 * 資料爬取流程:
 ![image](https://user-images.githubusercontent.com/58453878/131319704-d49a5931-4f65-4c7b-93f1-5ddc6850ffa4.png)
-1. 爬取Amazon資料時有遇到網站阻擋ip , 故我採取使用多IP的方式在每次爬取資料時隨機變更ip使網站不再阻擋 //詳情程式碼請參考:爬蟲/ETL_amazon_search.py  
+1. 爬取Amazon資料時有遇到網站阻擋ip , 故我採取使用多IP的方式在每次爬取資料時隨機變更ip使網站不再阻擋  
+//詳情程式碼請參考:爬蟲/ETL_amazon_search.py  
 ![image](https://user-images.githubusercontent.com/58453878/131321875-24e1c872-b169-4763-84ac-6f85a9ab7c4c.png)
 2. 透過多線程的方式爬取網站 加速網站速度 //詳情程式碼請參考:爬蟲/target.com_說明.ipynb
 * 資料清洗: //詳情程式碼:./sql_data_add.ipynb
@@ -70,14 +71,15 @@ Kaggle上只有產品編號,故我們將透過Kaggle提供的分類資訊來爬�
 1. 無人商店針對程式無預警出錯時,需將錯誤紀錄,並在隨時能發送給工程師搶修
 ![image](https://user-images.githubusercontent.com/58453878/131349688-f043eb15-8d31-4a4e-bcb5-34fe0aca8989.png)
 
-資料來源:
-Kaggle消費資料:https://www.kaggle.com/frtgnn/dunnhumby-the-complete-journey
-Kaggle口罩照片:https://www.kaggle.com/vijaykumar1799/face-mask-detection
-YOLO口罩訓練資料:https://www.kaggle.com/andrewmvd/face-mask-detection
-爬蟲資訊:
-Amazon:https://www.amazon.com/
-target:https://www.target.com/
-costco:https://www.costco.com.tw/ 
+資料來源:  
+* Kaggle消費資料:https://www.kaggle.com/frtgnn/dunnhumby-the-complete-journey
+* Kaggle口罩照片:https://www.kaggle.com/vijaykumar1799/face-mask-detection
+* YOLO口罩訓練資料:https://www.kaggle.com/andrewmvd/face-mask-detection
+
+爬蟲資訊:  
+* Amazon:https://www.amazon.com/
+* target:https://www.target.com/
+* costco:https://www.costco.com.tw/ 
 
 
 
